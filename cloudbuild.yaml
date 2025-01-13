@@ -1,19 +1,13 @@
 steps:
-  # Paso 1: Construir la imagen Docker
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'us-central1-docker.pkg.dev/dr-etherai-447717/huatuogpt-o1-repo/huatuogpt-o1:$COMMIT_SHA', '.']
-
-  # Paso 2: Subir la imagen a Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'us-central1-docker.pkg.dev/dr-etherai-447717/huatuogpt-o1-repo/huatuogpt-o1:$COMMIT_SHA']
-
-  # Paso 3: Desplegar en Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         gcloud run deploy huatuogpt-o1           --image us-central1-docker.pkg.dev/dr-etherai-447717/huatuogpt-o1-repo/huatuogpt-o1:$COMMIT_SHA           --platform managed           --region us-central1           --allow-unauthenticated           --memory 512Mi           --port 8080
-
 images:
   - 'us-central1-docker.pkg.dev/dr-etherai-447717/huatuogpt-o1-repo/huatuogpt-o1:$COMMIT_SHA'
